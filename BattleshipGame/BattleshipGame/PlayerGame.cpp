@@ -2,7 +2,7 @@
 
 PlayerGame::PlayerGame()
 {
-	//  set all members of the arrays to '0'
+	//  set all members of the arrays to '-'
 	for (int Outer_Loop = 0; Outer_Loop < 8; Outer_Loop++)
 	{
 		for (int Inner_Loop = 0; Inner_Loop < 8; Inner_Loop++) {
@@ -23,11 +23,13 @@ PlayerGame::PlayerGame()
 	constexpr int yStorage = 1;
 
 	int max = 8;
-	int Coordinates[POSSIBLE_COORDINATES][PAIR] = { { 0, 0 },{ 0, 0 },{ 0, 0 },{ 0, 0 } };
+	//int Coordinates[POSSIBLE_COORDINATES][PAIR] = { { 0, 0 },{ 0, 0 },{ 0, 0 },{ 0, 0 } };
 
-	
+	int NewX;
+	int NewY;
 
-	int limit = 2;
+
+	constexpr int limit = 4;
 
 	for (int k = 0, storage = 0; k < limit; k++)
 	{
@@ -35,42 +37,55 @@ PlayerGame::PlayerGame()
 		yCoordinate = Random(Upper);
 
 
-		for (int i = 0; i < 4; i++)
+
+		/*for (int i = 0; i < 4; i++)
 		{
 			for (int j = 0; j < 2; j++)
 			{
 				Coordinates[i][j] = 0;
 			}
-		}
+		}*/
 
 		if (CheckTop(xCoordinate, yCoordinate) != 0) {
-			Coordinates[Storage][yStorage] = CheckTop(xCoordinate, yCoordinate);
+			NewY = CheckTop(xCoordinate, yCoordinate);
+			NewX = xCoordinate;
+
+			/*Coordinates[Storage][yStorage] = CheckTop(xCoordinate, yCoordinate);
 			Coordinates[Storage][xStorage] = xCoordinate;
-			Storage++;
+			Storage++;*/
 		}
 		if (CheckRight(xCoordinate, yCoordinate) != 0) {
-			Coordinates[Storage][xStorage] = CheckRight(xCoordinate, yCoordinate);
+			NewY = yCoordinate;
+			NewX = CheckRight(xCoordinate, yCoordinate);
+
+			/*Coordinates[Storage][xStorage] = CheckRight(xCoordinate, yCoordinate);
 			Coordinates[Storage][yStorage] = yCoordinate;
-			Storage++;
+			Storage++;*/
 		}
 		if (CheckBottom(xCoordinate, yCoordinate) != 0) {
-			Coordinates[Storage][yStorage] = CheckBottom(xCoordinate, yCoordinate);
+			NewY = CheckBottom(xCoordinate, yCoordinate);
+			NewX = xCoordinate;
+
+			/*Coordinates[Storage][yStorage] = CheckBottom(xCoordinate, yCoordinate);
 			Coordinates[Storage][xStorage] = xCoordinate;
-			Storage++;
-		}
-		if (CheckLeft(xCoordinate, yCoordinate) != 0) {
-			Coordinates[Storage][xStorage] = CheckBottom(xCoordinate, yCoordinate);
-			Coordinates[Storage][yStorage] = yCoordinate;
-			Storage++;
-		}
-	
-		if (Storage != 0) {
-			RandCoordinate = Random(Storage);
-			Player_Board[yCoordinate][xCoordinate] = Ship_Position;
-			Player_Board[Coordinates[RandCoordinate][yStorage]][Coordinates[RandCoordinate][xStorage]] = Ship_Position;
+			Storage++;*/
 		}
 
-	}	
+		if (CheckLeft(xCoordinate, yCoordinate) != 0) {
+			NewY = yCoordinate;
+			NewX = CheckRight(xCoordinate, yCoordinate);
+
+			/*Coordinates[Storage][xStorage] = CheckLeft(xCoordinate, yCoordinate);
+			Coordinates[Storage][yStorage] = yCoordinate;
+			Storage++;*/
+		}
+
+			
+		Player_Board[yCoordinate][xCoordinate] = Ship_Position;
+
+		Player_Board[NewY][NewX] = Ship_Position;
+
+	}
 }
 
 int PlayerGame::CheckTop(int X, int Y)
@@ -80,18 +95,18 @@ int PlayerGame::CheckTop(int X, int Y)
 	else { return Y; }	
 }
 
-int PlayerGame::CheckRight(int X, int Y)
-{
-	X++;
-	if ((X > 7) && (Player_Board[Y][X] != Ship_Position)) { return 0; }
-	else { return X; }	
-}
-
 int PlayerGame::CheckBottom(int X, int Y)
 {
 	Y++;
 	if ((Y > 7) && (Player_Board[Y][X] != Ship_Position)) { return 0; }
 	else { return Y; }
+}
+
+int PlayerGame::CheckRight(int X, int Y)
+{
+	X++;
+	if ((X > 7) && (Player_Board[Y][X] != Ship_Position)) { return 0; }
+	else { return X; }
 }
 
 int PlayerGame::CheckLeft(int X, int Y)

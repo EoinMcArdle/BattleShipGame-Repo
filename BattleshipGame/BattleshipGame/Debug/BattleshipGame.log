@@ -1,3 +1,4 @@
 ﻿  PlayerGame.cpp
-  BattleshipGame.vcxproj -> C:\Users\eoinm\Documents\Visual Studio 2015\Projects\BattleshipGame\Debug\BattleshipGame.exe
-  BattleshipGame.vcxproj -> C:\Users\eoinm\Documents\Visual Studio 2015\Projects\BattleshipGame\Debug\BattleshipGame.pdb (Full PDB)
+c:\users\eoinm\documents\visual studio 2015\projects\battleshipgame&repo\battleshipgame\battleshipgame\playergame.cpp(16): warning C4101: 'RandCoordinate': unreferenced local variable
+  BattleshipGame.vcxproj -> C:\Users\eoinm\Documents\Visual Studio 2015\Projects\BattleShipGame&Repo\BattleshipGame\Debug\BattleshipGame.exe
+  BattleshipGame.vcxproj -> C:\Users\eoinm\Documents\Visual Studio 2015\Projects\BattleShipGame&Repo\BattleshipGame\Debug\BattleshipGame.pdb (Full PDB)

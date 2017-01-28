@@ -18,10 +18,7 @@ public:
 	int Random(int Upper);
 	void CpuGuess();
 
-	int CheckTop(int X, int Y);
-	int CheckRight(int X, int Y);
-	int CheckBottom(int X, int Y);
-	int CheckLeft(int X, int Y);
+	
 	
 
 private:
@@ -38,4 +35,9 @@ private:
 		RepeatGuess,
 		Valid
 	};
+
+	int CheckTop(int X, int Y);
+	int CheckRight(int X, int Y);
+	int CheckBottom(int X, int Y);
+	int CheckLeft(int X, int Y);
 };

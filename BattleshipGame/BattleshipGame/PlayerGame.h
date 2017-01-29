@@ -17,6 +17,7 @@ public:
 private:
 	char Player_Board[8][8];
 	int CpuScore = 0;
+	int SizeShip = 2;
 	const char EmptyPos = '-';
 	const char Miss = 'M';
 	const char Hit = 'X';

@@ -39,22 +39,15 @@ void CpuGame::ShipPlacement()
 			std::advance(it, Random(MAXRAND) % CheckPos.size());
 			std::string RandomKey = it->first;
 
-			if (RandomKey == "Top") {
+			if (RandomKey == "Top" || RandomKey == "Bottom") {
 				point.NewY = CheckPos[RandomKey];
 				point.NewX = point.X;
 			}
-			if (RandomKey == "Bottom") {
-				point.NewY = CheckPos[RandomKey];
-				point.NewX = point.X;
-			}
-			if (RandomKey == "Right") {
+			if (RandomKey == "Right" || RandomKey == "Left") {
 				point.NewX = CheckPos[RandomKey];
 				point.NewY = point.Y;
 			}
-			if (RandomKey == "Left") {
-				point.NewX = CheckPos[RandomKey];
-				point.NewY = point.Y;
-			}
+
 			Cpu_Offscreen[point.Y][point.X] = Ship_Position;
 			Cpu_Offscreen[point.NewY][point.NewX] = Ship_Position;
 		}

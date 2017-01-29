@@ -9,16 +9,21 @@ PlayerGame::PlayerGame()
 			Player_Board[Outer_Loop][Inner_Loop] = EmptyPos;
 		}
 	}
+	SizeShip = 2;
 	ShipPlacement();
 }
 
 void PlayerGame::ShipPlacement()
 {
 	constexpr int MAXRAND = 8;
-	int NumberShips = 8;
+	int NumberShips = 5;
 
-	for (int Loop = 0; Loop < NumberShips; Loop++) {
+	for (int Loop = 0; Loop < NumberShips; Loop++, SizeShip++) {
 		
+		/*if (Loop != 1 && Loop != 0 && Loop != 2) {
+			SizeShip++;
+		}*/
+
 		CheckPos.clear();
 		
 		do {
@@ -37,23 +42,25 @@ void PlayerGame::ShipPlacement()
 			std::string RandomKey = it->first;
 
 			if (RandomKey == "Top") {
-				point.NewY = CheckPos[RandomKey];
-				point.NewX = point.X;
+				for (int Loop = 0; Loop < SizeShip; Loop++) {
+					Player_Board[point.Y - Loop][point.X] = Ship_Position;
+				}
 			}
 			if (RandomKey == "Bottom") {
-				point.NewY = CheckPos[RandomKey];
-				point.NewX = point.X;
+				for (int Loop = 0; Loop < SizeShip; Loop++) {
+					Player_Board[point.Y + Loop][point.X] = Ship_Position;
+				}
 			}
-			if (RandomKey == "Right") {
-				point.NewX = CheckPos[RandomKey];
-				point.NewY = point.Y;
+			if (RandomKey == "Right" ) {
+				for (int Loop = 0; Loop < SizeShip; Loop++) {
+					Player_Board[point.Y][point.X + Loop] = Ship_Position;
+				}
 			}
 			if (RandomKey == "Left") {
-				point.NewX = CheckPos[RandomKey];
-				point.NewY = point.Y;
+				for (int Loop = 0; Loop < SizeShip; Loop++) {
+					Player_Board[point.Y][point.X - Loop] = Ship_Position;
+				}
 			}
-			Player_Board[point.Y][point.X] = Ship_Position;
-			Player_Board[point.NewY][point.NewX] = Ship_Position;	
 		}
 		else {
 			NumberShips++;
@@ -63,26 +70,54 @@ void PlayerGame::ShipPlacement()
 
 void PlayerGame::CheckTop()
 {
-	if (((point.Y - 1) < 0) || (Player_Board[point.Y - 1][point.X] == Ship_Position)) { return; }
-	else { CheckPos["Top"] = point.Y - 1; }
+	for (int Loop = 1; Loop < SizeShip; Loop++) {
+		if (((point.Y - Loop) < 0) || (Player_Board[point.Y - Loop][point.X] == Ship_Position)) { 
+			if (Loop > 1) {
+				CheckPos.erase("Top");
+			}
+			return;
+		}
+		else { CheckPos["Top"] = point.Y - Loop; }
+	}
 }
 
 void PlayerGame::CheckBottom()
 {
-	if (((point.Y + 1) > 7) || (Player_Board[point.Y + 1][point.X] == Ship_Position)) { return; }	
-	else { CheckPos["Bottom"] = point.Y + 1; }
+	for (int Loop = 1; Loop < SizeShip; Loop++) {
+		if (((point.Y + Loop) > 7) || (Player_Board[point.Y + Loop][point.X] == Ship_Position)) {
+			if (Loop > 1) {
+				CheckPos.erase("Bottom");
+			}
+			return;
+		}
+		else { CheckPos["Bottom"] = point.Y + Loop; }
+	}
 }
 
 void PlayerGame::CheckRight()
 {
-	if (((point.X + 1) > 7) || (Player_Board[point.Y][point.X + 1] == Ship_Position)) { return; }
-	else { CheckPos["Right"] = point.X + 1; }
+	for (int Loop = 1; Loop < SizeShip; Loop++) {
+		if (((point.X + Loop) > 7) || (Player_Board[point.Y][point.X + Loop] == Ship_Position)) { 
+			if (Loop > 1) {
+				CheckPos.erase("Right");
+			}
+			return; 
+		}
+		else { CheckPos["Right"] = point.X + Loop; }
+	}
 }
 
 void PlayerGame::CheckLeft()
 {
-	if (((point.X - 1) < 0) || (Player_Board[point.Y][point.X - 1] == Ship_Position)) { return; }
-	else { CheckPos["Left"] = point.X - 1; }
+	for (int Loop = 1; Loop < SizeShip; Loop++) {
+		if (((point.X - Loop) < 0) || (Player_Board[point.Y][point.X - Loop] == Ship_Position)) { 
+			if (Loop > 1) {
+				CheckPos.erase("Left");
+			}
+			return; 
+		}
+		else { CheckPos["Left"] = point.X - Loop; }
+	}
 }
 
 int PlayerGame::Random(int Upper)

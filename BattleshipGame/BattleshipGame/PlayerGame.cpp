@@ -9,112 +9,80 @@ PlayerGame::PlayerGame()
 			Player_Board[Outer_Loop][Inner_Loop] = EmptyPos;
 		}
 	}
+	ShipPlacement();
+}
 
-	// Place ships on the board
-	int xCoordinate;
-	int yCoordinate;
-	int RandCoordinate;
-	int Storage = 0;
+void PlayerGame::ShipPlacement()
+{
+	constexpr int MAXRAND = 8;
+	int NumberShips = 8;
 
-	constexpr int Upper = 8;
-	constexpr int POSSIBLE_COORDINATES = 4;
-	constexpr int PAIR = 2;
-	constexpr int xStorage = 0;
-	constexpr int yStorage = 1;
+	for (int Loop = 0; Loop < NumberShips; Loop++) {
+		
+		CheckPos.clear();
+		
+		do {
+			point.X = Random(MAXRAND);
+			point.Y = Random(MAXRAND);
+		} while (Player_Board[point.Y][point.X] == Ship_Position);
 
-	int max = 8;
-	//int Coordinates[POSSIBLE_COORDINATES][PAIR] = { { 0, 0 },{ 0, 0 },{ 0, 0 },{ 0, 0 } };
+		CheckTop();
+		CheckBottom();
+		CheckRight();
+		CheckLeft();
 
-	int NewX;
-	int NewY;
+		if (CheckPos.size() != 0) {
+			auto it = CheckPos.begin();
+			std::advance(it, Random(MAXRAND) % CheckPos.size());
+			std::string RandomKey = it->first;
 
-
-	constexpr int limit = 4;
-
-	for (int k = 0, storage = 0; k < limit; k++)
-	{
-		xCoordinate = Random(Upper);
-		yCoordinate = Random(Upper);
-
-
-
-		/*for (int i = 0; i < 4; i++)
-		{
-			for (int j = 0; j < 2; j++)
-			{
-				Coordinates[i][j] = 0;
+			if (RandomKey == "Top") {
+				point.NewY = CheckPos[RandomKey];
+				point.NewX = point.X;
 			}
-		}*/
-
-		if (CheckTop(xCoordinate, yCoordinate) != 0) {
-			NewY = CheckTop(xCoordinate, yCoordinate);
-			NewX = xCoordinate;
-
-			/*Coordinates[Storage][yStorage] = CheckTop(xCoordinate, yCoordinate);
-			Coordinates[Storage][xStorage] = xCoordinate;
-			Storage++;*/
+			if (RandomKey == "Bottom") {
+				point.NewY = CheckPos[RandomKey];
+				point.NewX = point.X;
+			}
+			if (RandomKey == "Right") {
+				point.NewX = CheckPos[RandomKey];
+				point.NewY = point.Y;
+			}
+			if (RandomKey == "Left") {
+				point.NewX = CheckPos[RandomKey];
+				point.NewY = point.Y;
+			}
+			Player_Board[point.Y][point.X] = Ship_Position;
+			Player_Board[point.NewY][point.NewX] = Ship_Position;	
 		}
-		if (CheckRight(xCoordinate, yCoordinate) != 0) {
-			NewY = yCoordinate;
-			NewX = CheckRight(xCoordinate, yCoordinate);
-
-			/*Coordinates[Storage][xStorage] = CheckRight(xCoordinate, yCoordinate);
-			Coordinates[Storage][yStorage] = yCoordinate;
-			Storage++;*/
-		}
-		if (CheckBottom(xCoordinate, yCoordinate) != 0) {
-			NewY = CheckBottom(xCoordinate, yCoordinate);
-			NewX = xCoordinate;
-
-			/*Coordinates[Storage][yStorage] = CheckBottom(xCoordinate, yCoordinate);
-			Coordinates[Storage][xStorage] = xCoordinate;
-			Storage++;*/
-		}
-
-		if (CheckLeft(xCoordinate, yCoordinate) != 0) {
-			NewY = yCoordinate;
-			NewX = CheckRight(xCoordinate, yCoordinate);
-
-			/*Coordinates[Storage][xStorage] = CheckLeft(xCoordinate, yCoordinate);
-			Coordinates[Storage][yStorage] = yCoordinate;
-			Storage++;*/
-		}
-
-			
-		Player_Board[yCoordinate][xCoordinate] = Ship_Position;
-
-		Player_Board[NewY][NewX] = Ship_Position;
-
+		else {
+			NumberShips++;
+		}	
 	}
 }
 
-int PlayerGame::CheckTop(int X, int Y)
+void PlayerGame::CheckTop()
 {
-	Y--;
-	if ((Y < 0) && (Player_Board[Y][X] != Ship_Position)) { return 0; }
-	else { return Y; }	
+	if (((point.Y - 1) < 0) || (Player_Board[point.Y - 1][point.X] == Ship_Position)) { return; }
+	else { CheckPos["Top"] = point.Y - 1; }
 }
 
-int PlayerGame::CheckBottom(int X, int Y)
+void PlayerGame::CheckBottom()
 {
-	Y++;
-	if ((Y > 7) && (Player_Board[Y][X] != Ship_Position)) { return 0; }
-	else { return Y; }
+	if (((point.Y + 1) > 7) || (Player_Board[point.Y + 1][point.X] == Ship_Position)) { return; }	
+	else { CheckPos["Bottom"] = point.Y + 1; }
 }
 
-int PlayerGame::CheckRight(int X, int Y)
+void PlayerGame::CheckRight()
 {
-	X++;
-	if ((X > 7) && (Player_Board[Y][X] != Ship_Position)) { return 0; }
-	else { return X; }
+	if (((point.X + 1) > 7) || (Player_Board[point.Y][point.X + 1] == Ship_Position)) { return; }
+	else { CheckPos["Right"] = point.X + 1; }
 }
 
-int PlayerGame::CheckLeft(int X, int Y)
+void PlayerGame::CheckLeft()
 {
-	X--;
-	if ((X < 0) && (Player_Board[Y][X] != Ship_Position)) { return 0; }
-	else { return X; }
-		
+	if (((point.X - 1) < 0) || (Player_Board[point.Y][point.X - 1] == Ship_Position)) { return; }
+	else { CheckPos["Left"] = point.X - 1; }
 }
 
 int PlayerGame::Random(int Upper)
@@ -134,8 +102,6 @@ int PlayerGame::Random(int Upper)
 
 	return Coordinate;
 }
-
-
 
 void PlayerGame::PrintArray()
 {

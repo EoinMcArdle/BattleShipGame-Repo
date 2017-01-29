@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <random>
+#include <map>
 
 enum ValidityStatus {
 	Invalid,
@@ -22,7 +23,7 @@ public:
 	int GetPlayerScore() const;
 	
 	void PrintArray();
-	int Random(); // generates random coordinates
+	int Random(int); // generates random coordinates
 	void CheckValidHit(std::string Guess);
 	ValidityStatus CheckGuessValidity(std::string Guess); //check if the user entered a valid guess
 	
@@ -37,8 +38,21 @@ private:
 	const char Hit = 'X';
 	const char Ship_Position = '1';
 
+	std::map<std::string, int> CheckPos;
+
 	int GuessX = 0; // index of the letter in the user's guess
 	int GuessY = 0; // index of the number in the user's guess
 	
 	int PlayerScore = 0; // how many hits the player has
+
+	struct NewPos {
+		int X, Y;
+		int NewX, NewY;
+	} point;
+
+	void ShipPlacement();
+	void CheckTop();
+	void CheckRight();
+	void CheckBottom();
+	void CheckLeft();
 };

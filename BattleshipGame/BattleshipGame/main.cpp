@@ -1,7 +1,6 @@
 #include <iostream>
 #include <stdlib.h>
 #include <string>
-#include <time.h>
 #include "CpuGame.h"
 #include "PlayerGame.h"
 
@@ -17,7 +16,7 @@ void PrintScore();
 bool PlayAgain();
 int IncrimentGuessNum(int GuessNum);
 
-//void Test();
+//void Test;
 
 CpuGame Cpu;
 PlayerGame Player;
@@ -25,6 +24,7 @@ PlayerGame Player;
 int main(void)
 {
 	do {
+		
 		Intro();
 		CpuBoard();
 		Divide();
@@ -47,12 +47,11 @@ int main(void)
 void Intro()
 {
 	system("CLS");
-
 	// Name of game
 	std::cout << "BATTLESHIP GAME\n" << std::endl;
 
 	// TODO more in depth instructions
-	std::cout << "Guess the position of the other player's 6 ships!\n" << std::endl;
+	std::cout << "Guess the position of the other player's 8 ships!\n" << std::endl;
 
 	// Proceed to game
 	std::cout << "Proceed to Game? (Y/N): ";
@@ -145,19 +144,6 @@ void GetGuesses(int GuessNum)
 
 	Cpu.CheckValidHit(Guess);
 	
-	//std::cout << "Y Position (Numbers): ";
-	//std::cin >> Y_Guess;
-
-	//std::cin.ignore();
-	
-	//std::cout << "Your Guess: " << X_Guess << ", " << Y_Guess << std::endl;
-
-	
-	
-	
-	
-
-	// Get computer's guess
 	Player.CpuGuess();
 
 	return;
@@ -182,7 +168,7 @@ bool IsGameWon()
 
 void PrintScore()
 {
-	constexpr int SHIPS = 6;
+	constexpr int SHIPS = 16;
 	system("CLS");
 	if (Cpu.GetPlayerScore() == SHIPS) {
 		std::cout << "You Win" << std::endl;

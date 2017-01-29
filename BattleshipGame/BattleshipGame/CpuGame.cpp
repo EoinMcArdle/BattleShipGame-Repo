@@ -12,21 +12,80 @@ CpuGame::CpuGame()
 		}
 	}
 	// TODO vary size of ships
-	// Place ships on the hidden cpu board
-	int x;
-	int y;
-	int Number_Ships = 6;
-	for (int Loop = 0; Loop < Number_Ships; Loop++)
-	{
-		x = Random();
-		y = Random();
-		if (Cpu_Offscreen[y][x] == Ship_Position) {
-			Number_Ships++;
+	ShipPlacement();
+}
+
+void CpuGame::ShipPlacement()
+{
+	constexpr int MAXRAND = 8;
+	int NumberShips = 8;
+
+	for (int Loop = 0; Loop < NumberShips; Loop++) {
+
+		CheckPos.clear();
+
+		do {
+			point.X = Random(MAXRAND);
+			point.Y = Random(MAXRAND);
+		} while (Cpu_Offscreen[point.Y][point.X] == Ship_Position);
+
+		CheckTop();
+		CheckBottom();
+		CheckRight();
+		CheckLeft();
+
+		if (CheckPos.size() != 0) {
+			auto it = CheckPos.begin();
+			std::advance(it, Random(MAXRAND) % CheckPos.size());
+			std::string RandomKey = it->first;
+
+			if (RandomKey == "Top") {
+				point.NewY = CheckPos[RandomKey];
+				point.NewX = point.X;
+			}
+			if (RandomKey == "Bottom") {
+				point.NewY = CheckPos[RandomKey];
+				point.NewX = point.X;
+			}
+			if (RandomKey == "Right") {
+				point.NewX = CheckPos[RandomKey];
+				point.NewY = point.Y;
+			}
+			if (RandomKey == "Left") {
+				point.NewX = CheckPos[RandomKey];
+				point.NewY = point.Y;
+			}
+			Cpu_Offscreen[point.Y][point.X] = Ship_Position;
+			Cpu_Offscreen[point.NewY][point.NewX] = Ship_Position;
 		}
 		else {
-			Cpu_Offscreen[y][x] = Ship_Position;
+			NumberShips++;
 		}
 	}
+}
+
+void CpuGame::CheckTop()
+{
+	if (((point.Y - 1) < 0) || (Cpu_Offscreen[point.Y - 1][point.X] == Ship_Position)) { return; }
+	else { CheckPos["Top"] = point.Y - 1; }
+}
+
+void CpuGame::CheckBottom()
+{
+	if (((point.Y + 1) > 7) || (Cpu_Offscreen[point.Y + 1][point.X] == Ship_Position)) { return; }
+	else { CheckPos["Bottom"] = point.Y + 1; }
+}
+
+void CpuGame::CheckRight()
+{
+	if (((point.X + 1) > 7) || (Cpu_Offscreen[point.Y][point.X + 1] == Ship_Position)) { return; }
+	else { CheckPos["Right"] = point.X + 1; }
+}
+
+void CpuGame::CheckLeft()
+{
+	if (((point.X - 1) < 0) || (Cpu_Offscreen[point.Y][point.X - 1] == Ship_Position)) { return; }
+	else { CheckPos["Left"] = point.X - 1; }
 }
 
 // Print out the visible cpu board
@@ -47,7 +106,7 @@ void CpuGame::PrintArray()
 	}
 }
 
-int CpuGame::Random()
+int CpuGame::Random(int Upper)
 {
 	// to generate random numbers from 0 to 7 inclusive
 	std::mt19937 eng; //object that produces random bits
@@ -59,7 +118,7 @@ int CpuGame::Random()
 	std::uniform_int_distribution<> dist(0, 7);
 
 	int rnd = dist(eng);
-	int Coordinate = rnd % 8;
+	int Coordinate = rnd % Upper;
 
 
 	return Coordinate;

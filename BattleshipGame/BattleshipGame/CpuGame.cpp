@@ -11,23 +11,24 @@ CpuGame::CpuGame()
 			Cpu_Offscreen[Outer_Loop][Inner_Loop] = EmptyPos;
 		}
 	}
-	// TODO vary size of ships
+	SizeShip = 2;
 	ShipPlacement();
 }
 
 void CpuGame::ShipPlacement()
 {
 	constexpr int MAXRAND = 8;
-	int NumberShips = 8;
+	int NumberShips = NUMSHIPS;
+	int Ship = 0;
 
-	for (int Loop = 0; Loop < NumberShips; Loop++) {
-
+	for (Ship = 0; Ship < NumberShips; Ship++) {
+		char ShipType = Ships[SizeShip - 2];
 		CheckPos.clear();
 
 		do {
 			point.X = Random(MAXRAND);
 			point.Y = Random(MAXRAND);
-		} while (Cpu_Offscreen[point.Y][point.X] == Ship_Position);
+		} while (Cpu_Offscreen[point.Y][point.X] != EmptyPos);
 
 		CheckTop();
 		CheckBottom();
@@ -39,17 +40,61 @@ void CpuGame::ShipPlacement()
 			std::advance(it, Random(MAXRAND) % CheckPos.size());
 			std::string RandomKey = it->first;
 
-			if (RandomKey == "Top" || RandomKey == "Bottom") {
-				point.NewY = CheckPos[RandomKey];
-				point.NewX = point.X;
+			if (RandomKey == "Top") {
+				for (int Loop = 0; Loop < SizeShip; Loop++) {
+					Cpu_Offscreen[point.Y - Loop][point.X] = ShipType;
+					if (Ship == 0) {
+						Dest1Coordinates[Loop][0] = point.Y - Loop;
+						Dest1Coordinates[Loop][1] = point.X;
+					}
+					if (Ship == 3) {
+						Cruiser1Coordinates[Loop][0] = point.Y - Loop;
+						Cruiser1Coordinates[Loop][1] = point.X;
+					}
+				}
 			}
-			if (RandomKey == "Right" || RandomKey == "Left") {
-				point.NewX = CheckPos[RandomKey];
-				point.NewY = point.Y;
+			if (RandomKey == "Bottom") {
+				for (int Loop = 0; Loop < SizeShip; Loop++) {
+					Cpu_Offscreen[point.Y + Loop][point.X] = ShipType;
+					if (Ship == 0) {
+						Dest1Coordinates[Loop][0] = point.Y + Loop;
+						Dest1Coordinates[Loop][1] = point.X;
+					}
+					if (Ship == 3) {
+						Cruiser1Coordinates[Loop][0] = point.Y + Loop;
+						Cruiser1Coordinates[Loop][1] = point.X;
+					}
+				}
 			}
-
-			Cpu_Offscreen[point.Y][point.X] = Ship_Position;
-			Cpu_Offscreen[point.NewY][point.NewX] = Ship_Position;
+			if (RandomKey == "Right") {
+				for (int Loop = 0; Loop < SizeShip; Loop++) {
+					Cpu_Offscreen[point.Y][point.X + Loop] = ShipType;
+					if (Ship == 0) {
+						Dest1Coordinates[Loop][0] = point.Y;
+						Dest1Coordinates[Loop][1] = point.X + Loop;
+					}
+					if (Ship == 3) {
+						Cruiser1Coordinates[Loop][0] = point.Y;
+						Cruiser1Coordinates[Loop][1] = point.X + Loop;
+					}
+				}
+			}
+			if (RandomKey == "Left") {
+				for (int Loop = 0; Loop < SizeShip; Loop++) {
+					Cpu_Offscreen[point.Y][point.X - Loop] = ShipType;
+					if (Ship == 0) {
+						Dest1Coordinates[Loop][0] = point.Y;
+						Dest1Coordinates[Loop][1] = point.X - Loop;
+					}
+					if (Ship == 3) {
+						Cruiser1Coordinates[Loop][0] = point.Y;
+						Cruiser1Coordinates[Loop][1] = point.X - Loop;
+					}
+				}
+			}
+			if (Ship != 0 && Ship != 3) {
+				SizeShip++;
+			}
 		}
 		else {
 			NumberShips++;
@@ -59,26 +104,54 @@ void CpuGame::ShipPlacement()
 
 void CpuGame::CheckTop()
 {
-	if (((point.Y - 1) < 0) || (Cpu_Offscreen[point.Y - 1][point.X] == Ship_Position)) { return; }
-	else { CheckPos["Top"] = point.Y - 1; }
+	for (int Loop = 1; Loop < SizeShip; Loop++) {
+		if (((point.Y - Loop) < 0) || (Cpu_Offscreen[point.Y - Loop][point.X] != EmptyPos)) {
+			if (Loop > 1) {
+				CheckPos.erase("Top");
+			}
+			return;
+		}
+		else { CheckPos["Top"] = point.Y - Loop; }
+	}
 }
 
 void CpuGame::CheckBottom()
 {
-	if (((point.Y + 1) > 7) || (Cpu_Offscreen[point.Y + 1][point.X] == Ship_Position)) { return; }
-	else { CheckPos["Bottom"] = point.Y + 1; }
+	for (int Loop = 1; Loop < SizeShip; Loop++) {
+		if (((point.Y + Loop) > 7) || (Cpu_Offscreen[point.Y + Loop][point.X] != EmptyPos)) {
+			if (Loop > 1) {
+				CheckPos.erase("Bottom");
+			}
+			return;
+		}
+		else { CheckPos["Bottom"] = point.Y + Loop; }
+	}
 }
 
 void CpuGame::CheckRight()
 {
-	if (((point.X + 1) > 7) || (Cpu_Offscreen[point.Y][point.X + 1] == Ship_Position)) { return; }
-	else { CheckPos["Right"] = point.X + 1; }
+	for (int Loop = 1; Loop < SizeShip; Loop++) {
+		if (((point.X + Loop) > 7) || (Cpu_Offscreen[point.Y][point.X + Loop] != EmptyPos)) {
+			if (Loop > 1) {
+				CheckPos.erase("Right");
+			}
+			return;
+		}
+		else { CheckPos["Right"] = point.X + Loop; }
+	}
 }
 
 void CpuGame::CheckLeft()
 {
-	if (((point.X - 1) < 0) || (Cpu_Offscreen[point.Y][point.X - 1] == Ship_Position)) { return; }
-	else { CheckPos["Left"] = point.X - 1; }
+	for (int Loop = 1; Loop < SizeShip; Loop++) {
+		if (((point.X - Loop) < 0) || (Cpu_Offscreen[point.Y][point.X - Loop] != EmptyPos)) {
+			if (Loop > 1) {
+				CheckPos.erase("Left");
+			}
+			return;
+		}
+		else { CheckPos["Left"] = point.X - Loop; }
+	}
 }
 
 // Print out the visible cpu board
@@ -184,48 +257,99 @@ ValidityStatus CpuGame::CheckGuessValidity(std::string Guess)
 void CpuGame::CheckValidHit(std::string Guess)
 {
 	constexpr int Conversion = 0b00110000;
-	int YIndex = (Guess[GuessY] ^ Conversion) - 1;
+	int Y = (Guess[GuessY] ^ Conversion) - 1;
 	int BitmaskL = 0b01100001;
-	int XIndex;
+	int X;
 	
 	for (int i = 0; i < 8; i++, BitmaskL++)
 	{
 		if (Guess[GuessX] == BitmaskL) {
-			XIndex = i;
+			X = i;
 		}
 	}
 
-	//compare coordinates with the hidden board
-	if (Cpu_Offscreen[YIndex][XIndex] == Ship_Position) {
-		//if 1 is at the coordinates, print Ship_Position on the shown board
-		Cpu_Visual[YIndex][XIndex] = Hit;
-		PlayerScore++;
+	if (Cpu_Offscreen[Y][X] == EmptyPos) {
+		Cpu_Visual[Y][X] = Miss;
 	}
-	
-	//if not show miss
-	else {
-		Cpu_Visual[YIndex][XIndex] = Miss;
+	else if (Cpu_Offscreen[Y][X] == Ships[2]) {
+		Cpu_Visual[Y][X] = Hit;
+		for (int Loop = 0; Loop < 4; Loop++) {
+			if (Y == Cruiser1Coordinates[Loop][0] && X == Cruiser1Coordinates[Loop][1]) {
+				Cruiser1++;
+				if (Cruiser1 == 4) {
+					PlayerScore++;
+					Cruiser1 = 0;
+				}
+				break;
+			}
+			if (Loop == 3) {
+				Cruiser2++;
+				if (Cruiser2 == 4) {
+					PlayerScore++;
+					Cruiser2 = 0;
+				}
+			}
+		}
 	}
-	
+	else if (Cpu_Offscreen[Y][X] == Ships[4]) {
+		Cpu_Visual[Y][X] = Hit;
+		Aircraft++;
+		if (Aircraft == 6) {
+			PlayerScore++;
+			Aircraft = 0;
+		}
+	}
+	else if (Cpu_Offscreen[Y][X] == Ships[3]) {
+		Cpu_Visual[Y][X] = Hit;
+		Battleship++;
+		if (Battleship == 5) {
+			PlayerScore++;
+			Battleship = 0;
+		}
+	}
+	else if (Cpu_Offscreen[Y][X] == Ships[0]) {
+		Cpu_Visual[Y][X] = Hit;
+		for (int Loop = 0; Loop < 2; Loop++) {
+			if (Y == Dest1Coordinates[Loop][0] && X == Dest1Coordinates[Loop][1]) {
+				Dest1++;
+				if (Dest1 == 2) {
+					PlayerScore++;
+					Dest1 = 0;
+				}
+				break;
+			}
+			if (Loop == 1) {
+				Dest2++;
+				if (Dest2 == 2) {
+					PlayerScore++;
+					Dest2 = 0;
+				}
+			}
+		}
+	}
+	else if (Cpu_Offscreen[Y][X] == Ships[1]) {
+		Cpu_Visual[Y][X] = Hit;
+		Frigate++;
+		if (Frigate == 3) {
+			PlayerScore++;
+			Frigate = 0;
+		}
+	}
 }
 
 int CpuGame::GetPlayerScore() const { return PlayerScore; }
 
 
 
-
-
-
-
-//void CpuGame::TestA()
-//{
-//	for (int a = 0; a < 8; a++)
-//	{
-//		for (int b = 0; b < 8; b++) {
-//			std::cout << Cpu_Offscreen[a][b] << "    ";
-//		}
-//		std::cout << std::endl;
-//		std::cout << std::endl;
-//		std::cout << std::endl;
-//	}
-//}
+void CpuGame::TestA()
+{
+	for (int a = 0; a < 8; a++)
+	{
+		for (int b = 0; b < 8; b++) {
+			std::cout << Cpu_Offscreen[a][b] << "    ";
+		}
+		std::cout << std::endl;
+		std::cout << std::endl;
+		std::cout << std::endl;
+	}
+}

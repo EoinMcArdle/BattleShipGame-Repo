@@ -16,7 +16,7 @@ void PrintScore();
 bool PlayAgain();
 int IncrimentGuessNum(int GuessNum);
 
-//void Test;
+void Test();
 
 CpuGame Cpu;
 PlayerGame Player;
@@ -29,7 +29,7 @@ int main(void)
 		CpuBoard();
 		Divide();
 		PlayerBoard();
-		/*Test();*/
+		//Test();
 		// continue asking for a guess until the game is won
 		int GuessNum = 1; // Current guess variable
 		while (!IsGameWon())
@@ -162,15 +162,13 @@ void Update()
 
 bool IsGameWon()
 {
-	constexpr int SHIPS = 6;
-	return ((Cpu.GetPlayerScore() == SHIPS) || (Player.GetCpuScore() == SHIPS));
+	return ((Cpu.GetPlayerScore() == Player.GetNumberofShips()) || (Player.GetCpuScore() == Player.GetNumberofShips()));
 }
 
 void PrintScore()
 {
-	constexpr int SHIPS = 16;
 	system("CLS");
-	if (Cpu.GetPlayerScore() == SHIPS) {
+	if (Cpu.GetPlayerScore() == Player.GetNumberofShips()) {
 		std::cout << "You Win" << std::endl;
 	}
 	else {
@@ -201,11 +199,10 @@ int IncrimentGuessNum(int GuessNum)
 	return GuessNum;
 }
 
-//// Function used for testing purposes
+// Function used for testing purposes
 //void Test()
 //{
 //	Cpu.TestA();
-//
 //	return;
 //}
 

@@ -27,16 +27,17 @@ public:
 	void CheckValidHit(std::string Guess);
 	ValidityStatus CheckGuessValidity(std::string Guess); //check if the user entered a valid guess
 	
-	/*void TestA();*/
+	void TestA();
 
 private:
 	char Cpu_Visual[8][8]; // board shown on the screen
 	char Cpu_Offscreen[8][8]; // secret board containing hidden ships
-	
+	const int NUMSHIPS = 7;
 	const char EmptyPos = '-';
 	const char Miss = 'M';
 	const char Hit = 'X';
 	const char Ship_Position = '1';
+	int SizeShip = 2;
 
 	std::map<std::string, int> CheckPos;
 
@@ -47,8 +48,12 @@ private:
 
 	struct NewPos {
 		int X, Y;
-		int NewX, NewY;
 	} point;
+
+	char Ships[5] = { 'D', 'F', 'C', 'B', 'A' };
+	int Dest1Coordinates[2][2];
+	int Cruiser1Coordinates[4][2];
+	int Dest1, Dest2, Frigate, Cruiser1, Cruiser2, Battleship, Aircraft = 0;
 
 	void ShipPlacement();
 	void CheckTop();
